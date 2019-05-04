@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Assets/GridAtlas.tres" type="Texture" id=1]
+
+[node name="GameGrid" type="GameGrid"]
+scale = Vector2( 0.5, 0.5 )
+GridSize = Vector2( 16, 9 )
+Texture = ExtResource( 1 )
