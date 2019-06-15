@@ -323,3 +323,4 @@ platform/windows/godot_res.res
 compile_commands.json
 
 .import/
+exporter/
