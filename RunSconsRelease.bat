@@ -1,1 +1,1 @@
-scons -j6 platform=windows target=release_debug
+scons -j6 platform=windows tools=no target=release

@@ -1,1 +1,0 @@
-scons -j6 argument_game_shared=no platform=windows vsproj=yes

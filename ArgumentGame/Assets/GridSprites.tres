@@ -1,0 +1,7 @@
+[gd_resource type="GridSpriteSettings" load_steps=2 format=2]
+
+[ext_resource path="res://Assets/GridSprites.png" type="Texture" id=1]
+
+[resource]
+SpriteSize = Vector2( 64, 71 )
+Texture = ExtResource( 1 )

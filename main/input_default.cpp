@@ -127,6 +127,19 @@ bool InputDefault::is_action_just_released(const StringName &p_action) const {
 	}
 }
 
+
+bool InputDefault::is_action_this_frame(const StringName &p_action) const {
+	const Map<StringName, Action>::Element *E = action_state.find(p_action);
+	if (!E)
+		return false;
+
+	if (Engine::get_singleton()->is_in_physics_frame()) {
+		return E->get().physics_frame == Engine::get_singleton()->get_physics_frames();
+	} else {
+		return E->get().idle_frame == Engine::get_singleton()->get_idle_frames();
+	}
+}
+
 float InputDefault::get_action_strength(const StringName &p_action) const {
 	const Map<StringName, Action>::Element *E = action_state.find(p_action);
 	if (!E)
