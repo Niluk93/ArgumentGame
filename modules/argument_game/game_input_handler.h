@@ -2,6 +2,7 @@
 #include "core/os/input_event.h"
 #include <functional>
 #include "core/object.h"
+#include "enum_flag_operations.h"
 
 enum class EInputActionStatus
 {
@@ -13,25 +14,7 @@ enum class EInputActionStatus
 	JustReleased	= Released | ThisFrame
 };
 
-_ALWAYS_INLINE_ EInputActionStatus operator|(const EInputActionStatus& a, const EInputActionStatus& b)
-{
-	return static_cast<EInputActionStatus>(static_cast<int>(a) | static_cast<int>(b));
-}
-
-_ALWAYS_INLINE_ void operator|=(EInputActionStatus& a, const EInputActionStatus& b)
-{
-	a = a | b;
-}
-
-_ALWAYS_INLINE_ EInputActionStatus operator&(const EInputActionStatus& a, const EInputActionStatus& b)
-{
-	return static_cast<EInputActionStatus>(static_cast<int>(a) & static_cast<int>(b));
-}
-
-_ALWAYS_INLINE_ void operator&=(EInputActionStatus& a, const EInputActionStatus& b)
-{
-	a = a & b;
-}
+ENUM_FLAG_OPERATIONS(EInputActionStatus);
 
 struct InputDetails
 {
@@ -63,3 +46,10 @@ protected:
 	Map<String, Vector<InputCallback>> InputBindings;
 	static GameInputHandler* SingletonInstance;
 };
+
+#define BIND_INPUT_CALLBACK(ActionBinding, OwningPtr, FunctionPtr)\
+{\
+	using std::placeholders::_1;\
+	GameInputHandler::InputCallback callback = std::bind(FunctionPtr, OwningPtr, _1);\
+	GameInputHandler::GetSingletonInstance()->BindInputEvent(ActionBinding, callback);\
+}

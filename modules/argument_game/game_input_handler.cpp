@@ -1,9 +1,9 @@
 #include "game_input_handler.h"
 #include "core/input_map.h"
 #include "core/map.h"
+#include "core/os/input.h"
 #include "common/debug.h"
 #include <utility>
-#include "core/os/input.h"
 
 GameInputHandler* GameInputHandler::SingletonInstance = NULL;
 
@@ -34,6 +34,13 @@ void GameInputHandler::PollInputEvents(const Ref<InputEvent>& Event) const
 			input.ActionState |= Event->is_action_pressed(itr->key()) ? EInputActionStatus::Pressed : EInputActionStatus::None;
 			input.ActionState |= Event->is_action_released(itr->key()) ? EInputActionStatus::Released : EInputActionStatus::None;
 			input.ActionState |= Input::get_singleton()->is_action_this_frame(itr->key()) ? EInputActionStatus::ThisFrame : EInputActionStatus::None;
+
+			Ref<InputEventMouseButton> mb = Event;
+			if (mb.is_valid())
+			{
+				input.ActionState |= mb->is_pressed() ? EInputActionStatus::Pressed : EInputActionStatus::Released;
+				input.ActionState |= EInputActionStatus::ThisFrame;
+			}
 
 			if (input.ActionState == EInputActionStatus::None)
 				input.ActionState = EInputActionStatus::Pressed;

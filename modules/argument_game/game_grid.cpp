@@ -1,17 +1,21 @@
 #include "game_grid.h"
+#include "grid_state.h"
+#include "game_input_handler.h"
+
+#include "scene/scene_string_names.h"
+
 #include "core/print_string.h"
 #include "core/os/input.h"
-#include "game_input_handler.h"
-#include "scene/scene_string_names.h"
 #include "core/engine.h"
+#include "scene/main/viewport.h"
 
 GameGrid::GameGrid()
 	: Pivot(0, 0)
 	, GridSize(1, 1)
 {
-	using std::placeholders::_1;
-	GameInputHandler::InputCallback tileSelect = std::bind(&GameGrid::tileSelected, this, _1);
-	GameInputHandler::GetSingletonInstance()->BindInputEvent("argument_tile_select", tileSelect);
+	BIND_INPUT_CALLBACK("argument_tile_select", this, &GameGrid::tileSelected);
+	BIND_INPUT_CALLBACK("argument_grid_state_next", this, &GameGrid::gridStateNext);
+	BIND_INPUT_CALLBACK("argument_grid_state_prev", this, &GameGrid::gridStatePrev);
 }
 
 void GameGrid::draw()
@@ -21,8 +25,28 @@ void GameGrid::draw()
 
 bool GameGrid::tileSelected(const InputDetails& inputDetails)
 {
-	int index = positionToTileIndex(Input::get_singleton()->get_mouse_position());
-	set_nodeTexture(index, GridTextures::Turn1TeamA);
+	Vector2 currMousePosition = get_viewport()->get_mouse_position();
+	int index = positionToTileIndex(currMousePosition);
+
+	if (GridController.is_valid() && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
+		GridController->process_tileSelected(index);
+
+	return true;
+}
+
+bool GameGrid::gridStatePrev(const InputDetails &inputDetails)
+{
+	if (GridController.is_valid() && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
+		GridController->process_gridStateChanged(false);
+
+	return true;
+}
+
+
+bool GameGrid::gridStateNext(const InputDetails &inputDetails)
+{
+	if (GridController.is_valid() && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
+		GridController->process_gridStateChanged(true);
 
 	return true;
 }
@@ -36,8 +60,8 @@ bool GameGrid::processMouseMovement(const Ref<InputEventMouseMotion> &mouseMove)
 	if (	currIndex != lastIndex
 		&&	currIndex >= 0 && currIndex < GridNodes.Textures.size())
 	{
-		set_nodeTexture(currIndex, GridTextures::Highlighted);
-		set_nodeTexture(lastIndex, GridTextures::First);
+		if (GridController.is_valid())
+			GridController->process_tileHover(lastIndex, currIndex);
 
 		lastIndex = currIndex;
 	}
@@ -45,10 +69,26 @@ bool GameGrid::processMouseMovement(const Ref<InputEventMouseMotion> &mouseMove)
 	return true;
 }
 
+
+Point2 GameGrid::absolutePositionToRelative(const Point2 &position)
+{
+	Transform2D globalTransform = get_global_transform();
+	Point2 newZeroOffset = Point2(0.f, 0.f) - globalTransform.get_origin();
+	Point2 targetPosition = position + newZeroOffset;
+
+	return targetPosition;
+}
+
 int GameGrid::positionToTileIndex(Point2 position)
 {
 	int gridElementWidth = (SpriteSettings.is_valid()) ? SpriteSettings->get_sprite_size().width : defaultTileSize;
 	int gridElementHeight = (SpriteSettings.is_valid()) ? SpriteSettings->get_sprite_size().height : defaultTileSize;
+
+	if (position.x < 0 || position.x > gridElementWidth * GridSize.width)
+		return -1;
+
+	if (position.y < 0 || position.y > gridElementHeight * GridSize.height)
+		return -1;
 
 	Vector2i gridPosition(position.x / gridElementWidth, position.y / gridElementHeight);
 	return (GridSize.width * gridPosition.y) + gridPosition.x;
@@ -72,6 +112,11 @@ void GameGrid::_notification(int p_what)
 		{
 			set_process(true);
 			set_process_input(true);
+			CurrentGridState.instance();
+			CurrentGridState->set_GridRef(this);
+
+			if (GridController.is_valid())
+				GridController->set_GridState(CurrentGridState);
 		}
 	}
 	break;
@@ -111,13 +156,18 @@ void GameGrid::_bind_methods()
 	ClassDB::bind_method(D_METHOD("set_spriteSettings", "settings"), &GameGrid::set_spriteSettings);
 	ClassDB::bind_method(D_METHOD("get_spriteSettings"), &GameGrid::get_spriteSettings);
 	ClassDB::bind_method(D_METHOD("get_texture"), &GameGrid::get_texture);
+	ClassDB::bind_method(D_METHOD("set_gridController", "gridController"), &GameGrid::set_gridController);
+	ClassDB::bind_method(D_METHOD("get_gridController"), &GameGrid::get_gridController);
+
 	ClassDB::bind_method(D_METHOD("_process", "delta"), &GameGrid::_process);
 	ClassDB::bind_method(D_METHOD("_input", "event"), &GameGrid::_input);
+	ClassDB::bind_method(D_METHOD("_update_mesh"), &GameGrid::GenerateArrayMesh);
 
 	ADD_GROUP("Grid", "");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "Pivot"), "set_pivot", "get_pivot");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "GridSize"), "set_gridSize", "get_gridSize");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "GridTexture", PROPERTY_HINT_RESOURCE_TYPE, "GridSpriteSettings"), "set_spriteSettings", "get_spriteSettings");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "GridController", PROPERTY_HINT_RESOURCE_TYPE, "GridControllerBase"), "set_gridController", "get_gridController");
 }
 
 void GameGrid::UpdateDirty()
@@ -150,8 +200,6 @@ void GameGrid::UpdateDirty()
 	}
 
 	GenerateArrayMesh();
-
-	update();
 }
 
 void GameGrid::UpdateTile(int index, bool autoGenerateMesh)
@@ -194,7 +242,6 @@ void GameGrid::UpdateTile(int index, bool autoGenerateMesh)
 	if (autoGenerateMesh)
 	{
 		GenerateArrayMesh();
-		update();
 	}
 }
 
@@ -212,4 +259,5 @@ void GameGrid::GenerateArrayMesh()
 	arrayMesh->add_surface_from_arrays(Mesh::PRIMITIVE_TRIANGLES, arrays);
 
 	MeshRef.set_mesh(arrayMesh);
+	update();
 }

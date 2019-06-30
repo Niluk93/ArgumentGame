@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Assets/GridSprites.tres" type="GridSpriteSettings" id=1]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="ArgumentGameGridController" id=1]
+
+[sub_resource type="GDScript" id=2]
 
 [node name="GameGrid" type="GameGrid"]
 GridSize = Vector2( 16, 9 )
 GridTexture = ExtResource( 1 )
-script = SubResource( 1 )
+GridController = SubResource( 1 )
+script = SubResource( 2 )

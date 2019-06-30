@@ -1,0 +1,186 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Assets/GridSprites.tres" type="GridSpriteSettings" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Fonts/CardEditorFont.tres" type="DynamicFont" id=3]
+
+[sub_resource type="CardEditorGridController" id=1]
+
+[sub_resource type="ViewportTexture" id=2]
+viewport_path = NodePath("ViewportContainer/Viewport")
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends TextEdit
+
+# Declare member variables here. Examples:
+onready var grid : GameGrid = get_node(\"/root/Control/ViewportContainer/Viewport/GridNode\")
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+
+func _on_TextEdit_focus_entered():
+	if(grid != null) :
+		var gridController = grid.get_gridController()
+		gridController.toggle_acceptingInput(false)
+	return # Replace with function body.
+
+
+func _on_TextEdit_focus_exited():
+	if(grid != null) :
+		var gridController = grid.get_gridController()
+		gridController.toggle_acceptingInput(true)
+	return # Replace with function body.
+"
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends Button
+
+# Declare member variables here.
+onready var grid : GameGrid = get_node(\"/root/Control/ViewportContainer/Viewport/GridNode\")
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+
+func _on_Button_pressed():
+	if(grid != null) :
+		var gridController = grid.get_gridController()
+		gridController.saveCard()
+	return
+"
+
+[sub_resource type="GDScript" id=5]
+script/source = "extends RichTextLabel
+
+# Declare member variables here. Examples:
+onready var grid : GameGrid = get_node(\"/root/Control/ViewportContainer/Viewport/GridNode\") 
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+func _input(var event : InputEvent):
+	if (event.is_action(\"card_editor_card_type_next\") || event.is_action(\"card_editor_card_type_prev\")):
+		var cardType : int = grid.get_gridController().get_CardType()
+		var cardTypeString : String
+		match cardType:
+			0: cardTypeString = \"Argument\"
+			1: cardTypeString = \"Counter Arg\"
+			2: cardTypeString = \"Special\"
+		text = \"Tab to Change card type - \" + cardTypeString
+		
+"
+
+[sub_resource type="GDScript" id=6]
+script/source = "extends RichTextLabel
+
+# Declare member variables here. Examples:
+onready var grid : GameGrid = get_node(\"/root/Control/ViewportContainer/Viewport/GridNode\") 
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+func _input(var event : InputEvent):
+	if (event.is_action(\"argument_grid_state_next\") || event.is_action(\"argument_grid_state_prev\")):
+		var turn : int = grid.get_gridController().get_Turn()
+		var turnString : String
+		match turn:
+			0: turnString = \"Turn 1\"
+			1: turnString = \"Turn 2\"
+			2: turnString = \"Turn 3\"
+			3: turnString = \"Turn 4\"
+		text = \"Tab to Change turn - \" + turnString
+		
+"
+
+[node name="Control" type="Control"]
+margin_right = 1024.0
+margin_bottom = 640.0
+focus_mode = 1
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+margin_right = 450.0
+margin_bottom = 500.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="Viewport" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 450, 500 )
+handle_input_locally = false
+usage = 0
+render_target_update_mode = 3
+
+[node name="GridNode" type="GameGrid" parent="ViewportContainer/Viewport"]
+GridSize = Vector2( 7, 7 )
+GridTexture = ExtResource( 1 )
+GridController = SubResource( 1 )
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_left = 625.486
+margin_top = 92.1419
+margin_right = 1075.49
+margin_bottom = 592.142
+grow_horizontal = 0
+grow_vertical = 0
+rect_scale = Vector2( 0.5, 0.5 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = SubResource( 2 )
+stretch_mode = 1
+flip_v = true
+
+[node name="TextEdit" type="TextEdit" parent="."]
+margin_left = 567.921
+margin_top = 25.1387
+margin_right = 904.921
+margin_bottom = 65.1387
+focus_mode = 1
+script = SubResource( 3 )
+
+[node name="Button" type="Button" parent="."]
+margin_left = 112.223
+margin_top = 532.04
+margin_right = 329.223
+margin_bottom = 602.04
+custom_fonts/font = ExtResource( 3 )
+text = "Save Card"
+icon = ExtResource( 2 )
+script = SubResource( 4 )
+
+[node name="CardType" type="RichTextLabel" parent="."]
+margin_left = 391.0
+margin_top = 524.0
+margin_right = 992.0
+margin_bottom = 559.0
+custom_fonts/mono_font = ExtResource( 3 )
+custom_fonts/bold_italics_font = ExtResource( 3 )
+custom_fonts/italics_font = ExtResource( 3 )
+custom_fonts/bold_font = ExtResource( 3 )
+custom_fonts/normal_font = ExtResource( 3 )
+text = "Tab to Change card type - Argument"
+script = SubResource( 5 )
+
+[node name="Turn" type="RichTextLabel" parent="."]
+margin_left = 393.0
+margin_top = 565.0
+margin_right = 949.0
+margin_bottom = 602.0
+custom_fonts/normal_font = ExtResource( 3 )
+text = "Scroll to Change turn - Turn 1"
+script = SubResource( 6 )
+[connection signal="focus_entered" from="TextEdit" to="TextEdit" method="_on_TextEdit_focus_entered"]
+[connection signal="focus_exited" from="TextEdit" to="TextEdit" method="_on_TextEdit_focus_exited"]
+[connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]

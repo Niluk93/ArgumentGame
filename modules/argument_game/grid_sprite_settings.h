@@ -1,33 +1,9 @@
 #pragma once
 #include "core/resource.h"
 #include "common/debug.h"
+#include "grid_sprite_textures.h"
 
 class Texture;
-
-enum GridTextures
-{
-	None = -1,
-
-	Blank,
-	Highlighted,
-	TeamA,
-	TeamB,
-	Turn1TeamA,
-	Turn1TeamB,
-	Turn2TeamA,
-	Turn2TeamB,
-	Turn3TeamA,
-	Turn3TeamB,
-	Turn4TeamA,
-	Turn4TeamB,
-
-	Last,
-	
-	First = None + 1,
-	Count = Last - First,
-	NumRows = Count / 2,
-	NumCols = 2,
-};
 
 class GridSpriteSettings : public Resource
 {

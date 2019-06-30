@@ -90,7 +90,7 @@
             <key>width</key>
             <int>256</int>
             <key>height</key>
-            <int>1024</int>
+            <int>2048</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -180,13 +180,21 @@
             <key type="filename">TeamA.png</key>
             <key type="filename">TeamB.png</key>
             <key type="filename">Turn1TeamA.png</key>
+            <key type="filename">Turn1TeamACounter.png</key>
             <key type="filename">Turn1TeamB.png</key>
+            <key type="filename">Turn1TeamBCounter.png</key>
             <key type="filename">Turn2TeamA.png</key>
+            <key type="filename">Turn2TeamACounter.png</key>
             <key type="filename">Turn2TeamB.png</key>
+            <key type="filename">Turn2TeamBCounter.png</key>
             <key type="filename">Turn3TeamA.png</key>
+            <key type="filename">Turn3TeamACounter.png</key>
             <key type="filename">Turn3TeamB.png</key>
+            <key type="filename">Turn3TeamBCounter.png</key>
             <key type="filename">Turn4TeamA.png</key>
+            <key type="filename">Turn4TeamACounter.png</key>
             <key type="filename">Turn4TeamB.png</key>
+            <key type="filename">Turn4TeamBCounter.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
