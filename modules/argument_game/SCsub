@@ -4,3 +4,35 @@ Import('env')
 module_env = env.Clone()
 module_env.add_source_files(env.modules_sources,"*.cpp")
 module_env.Append(CXXFLAGS=['-O2', '-std=c++11'])
+
+import os, sys
+from subprocess import *
+
+def getGitDesc():
+	return Popen('git describe --tags --always', stdout=PIPE, shell=True, text=True).stdout.read().strip()
+
+GIT_COMMITHASH = getGitDesc()
+
+# git show --no-patch --no-notes --pretty='%h %cd %s' 3.1-stable-788-gc3888482a8
+def getGitAuthor():
+	GIT_COMMAND = "git show --no-patch --no-notes --pretty=%aN " + GIT_COMMITHASH
+	return Popen(GIT_COMMAND, stdout=PIPE, shell=True, text=True).stdout.read().strip()
+
+def getGitCommitDate():
+	GIT_COMMAND = "git show --no-patch --no-notes --pretty=%ci " + GIT_COMMITHASH
+	return Popen(GIT_COMMAND, stdout=PIPE, shell=True, text=True).stdout.read().strip()
+	
+def getGitSubject():
+	GIT_COMMAND = "git show --no-patch --no-notes --pretty=%s " + GIT_COMMITHASH
+	return Popen(GIT_COMMAND, stdout=PIPE, shell=True, text=True).stdout.read().strip()
+
+GIT_AUTHOR = getGitAuthor()
+GIT_COMMITDATE = getGitCommitDate()
+GIT_SUBJECT = getGitSubject()
+
+print ("Building - " + GIT_COMMITHASH + " , " + GIT_AUTHOR + " , " + GIT_COMMITDATE + " , " + GIT_SUBJECT + " ...")
+
+module_env.Append(CPPDEFINES = { 'GIT_COMMITHASH' : ('\\"%s\\"' % GIT_COMMITHASH) })
+module_env.Append(CPPDEFINES = { 'GIT_AUTHOR' : ('\\"%s\\"' % GIT_AUTHOR) })
+module_env.Append(CPPDEFINES = { 'GIT_COMMITDATE' : ('\\"%s\\"' % GIT_COMMITDATE) })
+module_env.Append(CPPDEFINES = { 'GIT_SUBJECT' : ('\\"%s\\"' % GIT_SUBJECT) })

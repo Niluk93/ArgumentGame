@@ -100,6 +100,10 @@ bool CardEditorGridController::switchCardTypePrev(const InputDetails &inputDetai
 
 bool CardEditorGridController::switchCardTypeNext(const InputDetails &inputDetails)
 {
+	const char* hash = GIT_COMMITHASH;
+	const char* author = GIT_AUTHOR;
+	const char* date = GIT_COMMITDATE;
+	const char* subject = GIT_SUBJECT;
 	if (bAcceptingInput && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
 	{
 		EnumOpsECardType cardType = (CardType + 1 == ECardType::INVALID_CARD_END) ? ECardType::INVALID_CARD_START + 1 : CardType + 1;

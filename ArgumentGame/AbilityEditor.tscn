@@ -216,10 +216,10 @@ GridTexture = ExtResource( 1 )
 GridController = SubResource( 1 )
 
 [node name="TextureRect" type="TextureRect" parent="."]
-margin_left = 625.486
-margin_top = 92.1419
-margin_right = 1075.49
-margin_bottom = 592.142
+margin_left = 626.436
+margin_top = 91.1919
+margin_right = 1076.44
+margin_bottom = 591.192
 grow_horizontal = 0
 grow_vertical = 0
 rect_scale = Vector2( 0.5, 0.5 )
