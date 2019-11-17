@@ -1,4 +1,5 @@
 #pragma once
+#include "enum_utility_operations.h"
 
 enum GridTextures
 {
@@ -35,3 +36,4 @@ enum GridTextures
 };
 
 VARIANT_ENUM_CAST(GridTextures);
+ENUM_UTILITY_OPERATIONS(GridTextures)

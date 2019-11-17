@@ -1,6 +1,7 @@
 #pragma once
 #include "grid_controller_base.h"
 #include "grid_sprite_textures.h"
+#include "enum_utility_operations.h"
 
 struct InputDetails;
 
@@ -38,7 +39,8 @@ public:
 	void set_CardType(ECardType cardType)						{ CardType = cardType; }
 	ECardType get_CardType() const { return CardType; }
 
-	void saveCard();
+	void saveCard(const String& path);
+	void loadCard(const String& path);
 
 protected:
 	virtual void process_tileHoverImpl(int oldTileIndex, int newTileIndex) override;
@@ -56,3 +58,6 @@ protected:
 
 VARIANT_ENUM_CAST(CardEditorGridController::ETurn);
 VARIANT_ENUM_CAST(CardEditorGridController::ECardType);
+
+SCOPED_ENUM_UTILITY_OPERATIONS(CardEditorGridController, ETurn);
+SCOPED_ENUM_UTILITY_OPERATIONS(CardEditorGridController, ECardType);

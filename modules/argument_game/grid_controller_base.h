@@ -1,5 +1,6 @@
 #pragma once
 #include "core/resource.h"
+#include "grid_sprite_textures.h"
 
 class GridState;
 
@@ -12,13 +13,15 @@ public:
 
 	static void _bind_methods();
 
+	void init(Variant owner);
+
 	void process_tileHover(int oldTileIndex, int newTileIndex)				{ if(bAcceptingInput) process_tileHoverImpl(oldTileIndex, newTileIndex); }
 	void process_tileSelected(int tileIndex)								{ if(bAcceptingInput) process_tileSelectedImpl(tileIndex); }
 	void process_gridStateChanged(bool bNext)								{ if(bAcceptingInput) process_gridStateChangedImpl(bNext); }
 
 	void toggleAcceptingInput(bool toggleTo)								{ bAcceptingInput = toggleTo; }
 
-	void set_GridState(const Ref<GridState>& gridState);
+	GridTextures get_GridStateAtNode(int nodeIndex);
 
 protected:
 	virtual void process_tileHoverImpl(int oldTileIndex, int newTileIndex);
@@ -26,9 +29,8 @@ protected:
 	virtual void process_gridStateChangedImpl(bool bNext);
 
 protected:
-	// WeakRef so that we can easily swap out entire grid states when turns change and make sure memory is still properly cleared
-	// Also, just to understand the workflow, as we can also manually unref normal references for the same result
-	WeakRef GridStateRef;
+	Ref<GridState> GridStateRef;
+	Variant OwningGrid;
 
 	bool bAcceptingInput;
 };

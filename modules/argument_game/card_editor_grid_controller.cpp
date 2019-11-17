@@ -1,6 +1,9 @@
 #include "card_editor_grid_controller.h"
 #include "game_input_handler.h"
+#include "grid_state.h"
 #include <stdexcept>
+#include "core/io/resource_saver.h"
+#include "core/io/resource_loader.h"
 
 CardEditorGridController::CardEditorGridController()
 	: GridControllerBase()
@@ -26,7 +29,8 @@ void CardEditorGridController::_bind_methods()
 	ClassDB::bind_method(D_METHOD("get_Turn"), &CardEditorGridController::get_Turn);
 	ClassDB::bind_method(D_METHOD("set_CardType", "CardType"), &CardEditorGridController::set_CardType);
 	ClassDB::bind_method(D_METHOD("get_CardType"), &CardEditorGridController::get_CardType);
-	ClassDB::bind_method(D_METHOD("saveCard"), &CardEditorGridController::saveCard);
+	ClassDB::bind_method(D_METHOD("saveCard", "path"), &CardEditorGridController::saveCard);
+	ClassDB::bind_method(D_METHOD("loadCard", "path"), &CardEditorGridController::loadCard);
 
 	ADD_GROUP("Card", "");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "Turn", PROPERTY_HINT_ENUM, "Turn 1,Turn 2,Turn 3,Turn 4"), "set_Turn", "get_Turn");
@@ -35,11 +39,10 @@ void CardEditorGridController::_bind_methods()
 
 void CardEditorGridController::process_tileHoverImpl(int oldTileIndex, int newTileIndex)
 {
-	Variant gridStateVariant = GridStateRef.get_ref();
-	if (gridStateVariant.is_ref())
+	if (GridStateRef.is_valid())
 	{
-		gridStateVariant.call("set_NodeTemporaryState", newTileIndex, GridTextures::Highlighted);
-		gridStateVariant.call("set_NodeTemporaryState", oldTileIndex, gridStateVariant.call("get_NodeState", oldTileIndex));
+		GridStateRef->set_NodeTemporaryState(newTileIndex, GridTextures::Highlighted);
+		GridStateRef->set_NodeTemporaryState(oldTileIndex, GridStateRef->get_NodeState(oldTileIndex));
 	}
 }
 
@@ -51,44 +54,42 @@ void CardEditorGridController::process_tileSelectedImpl(int tileIndex)
 		return;
 	}
 
-	Variant gridStateVariant = GridStateRef.get_ref();
-	if (gridStateVariant.is_ref())
+	if (GridStateRef.is_valid())
 	{
-		int nodeState = gridStateVariant.call("get_NodeState", tileIndex);
+		EnumOpsGridTextures nodeState = GridStateRef->get_NodeState(tileIndex);
 
 		// TODO - Do this better? Super dependent on the sprite sheet asset
-		int targetState = ((Turn + 1) * 4) + CardType;
+		EnumOpsGridTextures targetState = ((Turn + 1) * 4) + CardType;
 		if (nodeState == targetState)
 		{
-			gridStateVariant.call("set_NodeState", tileIndex, GridTextures::First);
+			GridStateRef->set_NodeState(tileIndex, GridTextures::First);
 		}
 		else
 		{
-			gridStateVariant.call("set_NodeState", tileIndex, targetState);
+			GridStateRef->set_NodeState(tileIndex, targetState);
 		}
 	}
 }
 
 void CardEditorGridController::process_gridStateChangedImpl(bool bNext)
 {
-	int turn	=	bNext ?
-					(Turn + 1 == ETurn::INVALID_TURN_END) ? ETurn::INVALID_TURN_START + 1 : Turn + 1
-				:	(Turn - 1 == ETurn::INVALID_TURN_START) ? ETurn::INVALID_TURN_END - 1 : Turn - 1;
+	EnumOpsETurn turn	=	bNext ?
+							((Turn + 1 == ETurn::INVALID_TURN_END) ? ETurn::INVALID_TURN_START + 1 : Turn + 1) :
+							((Turn - 1 == ETurn::INVALID_TURN_START) ? ETurn::INVALID_TURN_END - 1 : Turn - 1);
 
-	set_Turn(static_cast<ETurn>(turn));
+	set_Turn(turn);
 }
 
 bool CardEditorGridController::switchCardTypePrev(const InputDetails &inputDetails)
 {
 	if (bAcceptingInput && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
 	{
-		int cardType = (CardType - 1 == ECardType::INVALID_CARD_START) ? ECardType::INVALID_CARD_END - 1 : CardType - 1;
-		set_CardType(static_cast<ECardType>(cardType));
+		EnumOpsECardType cardType = (CardType - 1 == ECardType::INVALID_CARD_START) ? ECardType::INVALID_CARD_END - 1 : CardType - 1;
+		set_CardType(cardType);
 
-		Variant gridStateVariant = GridStateRef.get_ref();
-		if (gridStateVariant.is_ref())
+		if (GridStateRef.is_valid())
 		{
-			gridStateVariant.call("resetGrid");
+			GridStateRef->resetGrid();
 		}
 
 		return true;
@@ -101,13 +102,12 @@ bool CardEditorGridController::switchCardTypeNext(const InputDetails &inputDetai
 {
 	if (bAcceptingInput && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
 	{
-		int cardType = (CardType + 1 == ECardType::INVALID_CARD_END) ? ECardType::INVALID_CARD_START + 1 : CardType + 1;
-		set_CardType(static_cast<ECardType>(cardType));
+		EnumOpsECardType cardType = (CardType + 1 == ECardType::INVALID_CARD_END) ? ECardType::INVALID_CARD_START + 1 : CardType + 1;
+		set_CardType(cardType);
 
-		Variant gridStateVariant = GridStateRef.get_ref();
-		if (gridStateVariant.is_ref())
+		if (GridStateRef.is_valid())
 		{
-			gridStateVariant.call("resetGrid");
+			GridStateRef->resetGrid();
 		}
 
 		return true;
@@ -116,10 +116,17 @@ bool CardEditorGridController::switchCardTypeNext(const InputDetails &inputDetai
 	return false;
 }
 
-void CardEditorGridController::saveCard()
+void CardEditorGridController::saveCard(const String& path)
 {
-	//if (!(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
+	if (GridStateRef.is_valid())
 	{
-		print_line("Please don't even");
+		ResourceSaver::save(path, GridStateRef);
 	}
+
+}
+
+void CardEditorGridController::loadCard(const String &path)
+{
+	GridStateRef = ResourceLoader::load(path);
+	GridStateRef->set_GridRef(OwningGrid);
 }

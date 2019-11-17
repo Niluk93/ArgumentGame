@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Assets/GridSprites.tres" type="GridSpriteSettings" id=1]
-[ext_resource path="res://icon.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Fonts/CardEditorFont.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Assets/UI/FontAwesome/svgs/solid/download.png" type="Texture" id=2]
+[ext_resource path="res://Assets/UI/FontAwesome/svgs/solid/save.png" type="Texture" id=3]
+[ext_resource path="res://Assets/UI/Themes/CardEditorTheme.tres" type="Theme" id=4]
 
 [sub_resource type="CardEditorGridController" id=1]
 
@@ -42,6 +43,25 @@ func _on_TextEdit_focus_exited():
 script/source = "extends Button
 
 # Declare member variables here.
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+func _on_Save_pressed():
+	var saveDialog : FileDialog = get_node(\"/root/Control/SaveButton/SaveDialog\")
+	saveDialog.popup_centered()
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id=5]
+script/source = "extends FileDialog
+
+# Declare member variables here. Examples:
 onready var grid : GameGrid = get_node(\"/root/Control/ViewportContainer/Viewport/GridNode\")
 
 # Called when the node enters the scene tree for the first time.
@@ -53,14 +73,80 @@ func _ready():
 #	pass
 
 
-func _on_Button_pressed():
-	if(grid != null) :
-		var gridController = grid.get_gridController()
-		gridController.saveCard()
-	return
+func _on_SaveDialog_about_to_show():
+	grid.get_gridController().toggle_acceptingInput(false)
+	pass # Replace with function body.
+
+
+func _on_SaveDialog_popup_hide():
+	grid.get_gridController().toggle_acceptingInput(true)
+	pass # Replace with function body.
+
+
+func _on_SaveDialog_confirmed():
+	grid.get_gridController().saveCard(current_path)
+	pass # Replace with function body.
+
+
+func _on_SaveDialog_file_selected(path):
+	grid.get_gridController().saveCard(current_path)
+	pass # Replace with function body.
 "
 
-[sub_resource type="GDScript" id=5]
+[sub_resource type="GDScript" id=6]
+script/source = "extends Button
+
+# Declare member variables here. Examples:
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+func _on_Load_pressed():
+	var loadDialog : FileDialog = get_node(\"/root/Control/LoadButton/LoadDialog\")
+	loadDialog.popup_centered()
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends FileDialog
+
+# Declare member variables here. Examples:
+onready var grid : GameGrid = get_node(\"/root/Control/ViewportContainer/Viewport/GridNode\")
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+func _on_LoadDialog_popup_hide():
+	grid.get_gridController().toggle_acceptingInput(true)
+	pass # Replace with function body.
+
+
+func _on_LoadDialog_about_to_show():
+	grid.get_gridController().toggle_acceptingInput(false)
+	pass # Replace with function body.
+
+
+func _on_LoadDialog_confirmed():
+	grid.get_gridController().loadCard(current_path)
+	pass # Replace with function body.
+
+
+func _on_LoadDialog_file_selected(path):
+	grid.get_gridController().loadCard(current_path)
+	pass # Replace with function body.
+"
+
+[sub_resource type="GDScript" id=8]
 script/source = "extends RichTextLabel
 
 # Declare member variables here. Examples:
@@ -82,7 +168,7 @@ func _input(var event : InputEvent):
 		
 "
 
-[sub_resource type="GDScript" id=6]
+[sub_resource type="GDScript" id=9]
 script/source = "extends RichTextLabel
 
 # Declare member variables here. Examples:
@@ -109,16 +195,17 @@ func _input(var event : InputEvent):
 margin_right = 1024.0
 margin_bottom = 640.0
 focus_mode = 1
+theme = ExtResource( 4 )
 
 [node name="ViewportContainer" type="ViewportContainer" parent="."]
-margin_right = 450.0
-margin_bottom = 500.0
+margin_right = 448.947
+margin_bottom = 495.562
 grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
 [node name="Viewport" type="Viewport" parent="ViewportContainer"]
-size = Vector2( 450, 500 )
+size = Vector2( 448, 495 )
 handle_input_locally = false
 usage = 0
 render_target_update_mode = 3
@@ -144,43 +231,82 @@ flip_v = true
 
 [node name="TextEdit" type="TextEdit" parent="."]
 margin_left = 567.921
-margin_top = 25.1387
+margin_top = 22.554
 margin_right = 904.921
-margin_bottom = 65.1387
+margin_bottom = 62.554
 focus_mode = 1
+wrap_enabled = true
 script = SubResource( 3 )
 
-[node name="Button" type="Button" parent="."]
-margin_left = 112.223
-margin_top = 532.04
-margin_right = 329.223
-margin_bottom = 602.04
-custom_fonts/font = ExtResource( 3 )
+[node name="SaveButton" type="Button" parent="."]
+margin_left = 517.905
+margin_top = 393.558
+margin_right = 714.905
+margin_bottom = 448.558
 text = "Save Card"
 icon = ExtResource( 2 )
 script = SubResource( 4 )
 
-[node name="CardType" type="RichTextLabel" parent="."]
-margin_left = 391.0
-margin_top = 524.0
-margin_right = 992.0
-margin_bottom = 559.0
-custom_fonts/mono_font = ExtResource( 3 )
-custom_fonts/bold_italics_font = ExtResource( 3 )
-custom_fonts/italics_font = ExtResource( 3 )
-custom_fonts/bold_font = ExtResource( 3 )
-custom_fonts/normal_font = ExtResource( 3 )
-text = "Tab to Change card type - Argument"
+[node name="SaveDialog" type="FileDialog" parent="SaveButton"]
+margin_left = -516.794
+margin_top = -374.178
+margin_right = 505.206
+margin_bottom = 242.822
+window_title = "Save Card"
+resizable = true
+current_dir = "res://Assets/CardPrefabs"
+current_file = "testCard2.tres"
+current_path = "res://Assets/CardPrefabs/testCard2.tres"
 script = SubResource( 5 )
 
-[node name="Turn" type="RichTextLabel" parent="."]
-margin_left = 393.0
-margin_top = 565.0
-margin_right = 949.0
-margin_bottom = 602.0
-custom_fonts/normal_font = ExtResource( 3 )
-text = "Scroll to Change turn - Turn 1"
+[node name="LoadButton" type="Button" parent="."]
+margin_left = 741.385
+margin_top = 392.346
+margin_right = 940.385
+margin_bottom = 448.346
+text = "Load Card"
+icon = ExtResource( 3 )
 script = SubResource( 6 )
+
+[node name="LoadDialog" type="FileDialog" parent="LoadButton"]
+margin_left = -740.438
+margin_top = -372.438
+margin_right = 276.562
+margin_bottom = 245.562
+popup_exclusive = true
+window_title = "Open a File"
+resizable = true
+mode = 0
+show_hidden_files = true
+current_dir = "res://Assets/CardPrefabs"
+current_file = "testCard2.tres"
+current_path = "res://Assets/CardPrefabs/testCard2.tres"
+script = SubResource( 7 )
+
+[node name="CardType" type="RichTextLabel" parent="."]
+margin_left = 25.3087
+margin_top = 526.281
+margin_right = 626.309
+margin_bottom = 561.281
+text = "Tab to Change card type - Argument"
+script = SubResource( 8 )
+
+[node name="Turn" type="RichTextLabel" parent="."]
+margin_left = 27.1339
+margin_top = 565.0
+margin_right = 583.134
+margin_bottom = 602.0
+text = "Scroll to Change turn - Turn 1"
+script = SubResource( 9 )
 [connection signal="focus_entered" from="TextEdit" to="TextEdit" method="_on_TextEdit_focus_entered"]
 [connection signal="focus_exited" from="TextEdit" to="TextEdit" method="_on_TextEdit_focus_exited"]
-[connection signal="pressed" from="Button" to="Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="SaveButton" to="SaveButton" method="_on_Save_pressed"]
+[connection signal="about_to_show" from="SaveButton/SaveDialog" to="SaveButton/SaveDialog" method="_on_SaveDialog_about_to_show"]
+[connection signal="confirmed" from="SaveButton/SaveDialog" to="SaveButton/SaveDialog" method="_on_SaveDialog_confirmed"]
+[connection signal="file_selected" from="SaveButton/SaveDialog" to="SaveButton/SaveDialog" method="_on_SaveDialog_file_selected"]
+[connection signal="popup_hide" from="SaveButton/SaveDialog" to="SaveButton/SaveDialog" method="_on_SaveDialog_popup_hide"]
+[connection signal="pressed" from="LoadButton" to="LoadButton" method="_on_Load_pressed"]
+[connection signal="about_to_show" from="LoadButton/LoadDialog" to="LoadButton/LoadDialog" method="_on_LoadDialog_about_to_show"]
+[connection signal="confirmed" from="LoadButton/LoadDialog" to="LoadButton/LoadDialog" method="_on_LoadDialog_confirmed"]
+[connection signal="file_selected" from="LoadButton/LoadDialog" to="LoadButton/LoadDialog" method="_on_LoadDialog_file_selected"]
+[connection signal="popup_hide" from="LoadButton/LoadDialog" to="LoadButton/LoadDialog" method="_on_LoadDialog_popup_hide"]

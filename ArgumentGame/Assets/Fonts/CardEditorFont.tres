@@ -1,10 +1,8 @@
 [gd_resource type="DynamicFont" load_steps=2 format=2]
 
 [sub_resource type="DynamicFontData" id=1]
-font_path = "res://Assets/Fonts/VCR_OSD_MONO_1.001.ttf"
+font_path = "res://Assets/Fonts/CardEditorDefaultFont.ttf"
 
 [resource]
-size = 28
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
+size = 40
 font_data = SubResource( 1 )

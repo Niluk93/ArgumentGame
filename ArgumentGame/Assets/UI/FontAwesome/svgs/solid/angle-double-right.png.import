@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/angle-double-right.png-65bfe7094a98258964cd96eaa3a5cfdb.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://Assets/UI/FontAwesome/svgs/solid/angle-double-right.png"
+dest_files=[ "res://.import/angle-double-right.png-65bfe7094a98258964cd96eaa3a5cfdb.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=true
+stream=false
+size_limit=32
+detect_3d=true
+svg/scale=1.0

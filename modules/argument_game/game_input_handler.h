@@ -2,7 +2,7 @@
 #include "core/os/input_event.h"
 #include <functional>
 #include "core/object.h"
-#include "enum_flag_operations.h"
+#include "enum_utility_operations.h"
 
 enum class EInputActionStatus
 {
@@ -14,7 +14,7 @@ enum class EInputActionStatus
 	JustReleased	= Released | ThisFrame
 };
 
-ENUM_FLAG_OPERATIONS(EInputActionStatus);
+ENUM_UTILITY_OPERATIONS(EInputActionStatus);
 
 struct InputDetails
 {

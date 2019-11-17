@@ -95,8 +95,7 @@ int GameGrid::positionToTileIndex(Point2 position)
 }
 
 void GameGrid::_notification(int p_what)
-{
-	
+{	
 	switch (p_what)
 	{
 	case NOTIFICATION_PROCESS:
@@ -112,11 +111,11 @@ void GameGrid::_notification(int p_what)
 		{
 			set_process(true);
 			set_process_input(true);
-			CurrentGridState.instance();
-			CurrentGridState->set_GridRef(this);
+		}
 
-			if (GridController.is_valid())
-				GridController->set_GridState(CurrentGridState);
+		if (GridController.is_valid())
+		{
+			GridController->init(this);
 		}
 	}
 	break;
@@ -158,10 +157,12 @@ void GameGrid::_bind_methods()
 	ClassDB::bind_method(D_METHOD("get_texture"), &GameGrid::get_texture);
 	ClassDB::bind_method(D_METHOD("set_gridController", "gridController"), &GameGrid::set_gridController);
 	ClassDB::bind_method(D_METHOD("get_gridController"), &GameGrid::get_gridController);
+	ClassDB::bind_method(D_METHOD("set_nodeTexture", "index", "texture", "bAutogenerateMesh"), &GameGrid::set_nodeTexture);
 
 	ClassDB::bind_method(D_METHOD("_process", "delta"), &GameGrid::_process);
 	ClassDB::bind_method(D_METHOD("_input", "event"), &GameGrid::_input);
 	ClassDB::bind_method(D_METHOD("_update_mesh"), &GameGrid::GenerateArrayMesh);
+	ClassDB::bind_method(D_METHOD("_update_dirty"), &GameGrid::UpdateDirty);
 
 	ADD_GROUP("Grid", "");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "Pivot"), "set_pivot", "get_pivot");
@@ -172,6 +173,10 @@ void GameGrid::_bind_methods()
 
 void GameGrid::UpdateDirty()
 {
+	// can't draw without a valid controller to tell us what we must draw
+	if (!GridController.is_valid())
+		return;
+
 	GridNodes.Points.clear();
 	GridNodes.Points.resize((GridSize.width * GridSize.height) * 6);
 
@@ -180,9 +185,10 @@ void GameGrid::UpdateDirty()
 
 	GridNodes.Textures.clear();
 	GridNodes.Textures.resize(GridSize.width * GridSize.height);
+
 	for (int i = 0; i < GridNodes.Textures.size(); ++i)
 	{
-		GridNodes.Textures.set(i, GridTextures::First);
+		GridNodes.Textures.set(i, GridController->get_GridStateAtNode(i));
 	}
 
 	GridNodes.UVs.clear();

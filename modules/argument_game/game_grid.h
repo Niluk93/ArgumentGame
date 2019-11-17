@@ -24,13 +24,13 @@ class GameGrid : public Node2D
 public:
 	GameGrid();
 
-	void set_pivot(const Point2& pivot)														{ Pivot = pivot; UpdateDirty(); }
+	void set_pivot(const Point2& pivot)														{ Pivot = pivot; }
 	Point2 get_pivot() const																{ return Pivot; }
 
-	void set_gridSize(const Vector2& gridSize)												{ GridSize = gridSize; UpdateDirty(); }
+	void set_gridSize(const Vector2& gridSize)												{ GridSize = gridSize; }
 	Vector2 get_gridSize() const															{ return GridSize; }
 
-	void set_spriteSettings(const Ref<GridSpriteSettings>& setting)							{ SpriteSettings = setting; UpdateDirty(); }
+	void set_spriteSettings(const Ref<GridSpriteSettings>& setting)							{ SpriteSettings = setting; }
 	Ref<GridSpriteSettings> get_spriteSettings() const										{ return SpriteSettings; }
 
 	Ref<Texture> get_texture() const														{ return SpriteSettings.is_valid() ? SpriteSettings->get_texture() : NULL; }
@@ -66,10 +66,6 @@ protected:
 	Vector2i					GridSize;
 	GridNodesSoA				GridNodes;
 	Ref<GridSpriteSettings>		SpriteSettings;
-
-	// Current state of the grid.
-	// TODO : Hold an array of grid states up to 4 turns in the future and swap them out as turns play out.
-	Ref<GridState>				CurrentGridState;
 
 	// handles what should be done with the input.
 	// Important, since we will be using grid for editing cards, displaying cards and while playing the game
