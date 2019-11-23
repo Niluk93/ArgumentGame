@@ -1,0 +1,1 @@
+START %~dp0\EditorStable\godot.windows.opt.tools.64.exe ArgumentGame/project.godot

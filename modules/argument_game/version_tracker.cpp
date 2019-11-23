@@ -32,13 +32,13 @@ void VersionTracker::_notification(int p_what)
 		ofs.y += font->get_ascent();
 
 		font->draw(ci, ofs, CommitHash, color);
-		ofs.y += font->get_ascent();
+		ofs.y += font->get_ascent() * 1.5f;
 
 		font->draw(ci, ofs, Author, color);
-		ofs.y += font->get_ascent();
+		ofs.y += font->get_ascent() * 1.5f;
 
 		font->draw(ci, ofs, CommitDate, color);
-		ofs.y += font->get_ascent();
+		ofs.y += font->get_ascent() * 1.6f;
 
 		font->draw(ci, ofs, Subject, color);
 	}
@@ -52,7 +52,7 @@ VersionTrackerPlugin::VersionTrackerPlugin(EditorNode *p_node)
 {
 	editor = p_node;
 	VersionTrackerPtr = memnew(VersionTracker);
-	VersionTrackerPtr->set_custom_minimum_size(Size2(0, 300));
+	VersionTrackerPtr->set_custom_minimum_size(Size2(0, 100));
 	button = editor->add_bottom_panel_item(TTR("VersionTracker"), VersionTrackerPtr);
 	button->show();
 }
@@ -82,7 +82,6 @@ void VersionTrackerPlugin::make_visible(bool p_visible)
 	}
 	else
 	{
-
 		if (VersionTrackerPtr->is_visible_in_tree())
 			editor->hide_bottom_panel();
 		button->hide();
