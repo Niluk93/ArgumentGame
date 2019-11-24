@@ -40,6 +40,12 @@ void GridControllerBase::process_gridStateChangedImpl(bool bNext)
 	throw std::logic_error("The method or operation is not implemented.");
 }
 
+void GridControllerBase::toggleAcceptingInput(bool toggleTo)
+{
+	GridStateRef->set_GridRef(OwningGrid);
+	bAcceptingInput = toggleTo;
+}
+
 GridTextures GridControllerBase::get_GridStateAtNode(int nodeIndex)
 {
 	return GridStateRef->get_NodeState(nodeIndex);

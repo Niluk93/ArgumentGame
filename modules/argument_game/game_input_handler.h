@@ -14,7 +14,7 @@ enum class EInputActionStatus
 	JustReleased	= Released | ThisFrame
 };
 
-ENUM_UTILITY_OPERATIONS(EInputActionStatus);
+ENUM_UTILITY_OPERATIONS(EInputActionStatus, true);
 
 struct InputDetails
 {

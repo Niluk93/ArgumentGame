@@ -1,0 +1,27 @@
+#pragma once
+#include "enum_utility_operations.h"
+
+enum ETurn
+{
+	INVALID_TURN_START = -1,
+	TURN_ONE,
+	TURN_TWO,
+	TURN_THREE,
+	TURN_FOUR,
+	INVALID_TURN_END
+};
+
+enum ECardType
+{
+	INVALID_CARD_START = -1,
+	CARD_ARGUMENT,
+	CARD_COUNTER_ARGUMENT,
+	CARD_SPECIAL,
+	INVALID_CARD_END
+};
+
+VARIANT_ENUM_CAST(ETurn);
+VARIANT_ENUM_CAST(ECardType);
+
+ENUM_UTILITY_OPERATIONS(ETurn, false);
+ENUM_UTILITY_OPERATIONS(ECardType, false);

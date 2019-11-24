@@ -13,13 +13,13 @@ public:
 
 	static void _bind_methods();
 
-	void init(Variant owner);
+	virtual void init(Variant owner);
 
 	void process_tileHover(int oldTileIndex, int newTileIndex)				{ if(bAcceptingInput) process_tileHoverImpl(oldTileIndex, newTileIndex); }
 	void process_tileSelected(int tileIndex)								{ if(bAcceptingInput) process_tileSelectedImpl(tileIndex); }
 	void process_gridStateChanged(bool bNext)								{ if(bAcceptingInput) process_gridStateChangedImpl(bNext); }
 
-	void toggleAcceptingInput(bool toggleTo)								{ bAcceptingInput = toggleTo; }
+	void toggleAcceptingInput(bool toggleTo);
 
 	GridTextures get_GridStateAtNode(int nodeIndex);
 

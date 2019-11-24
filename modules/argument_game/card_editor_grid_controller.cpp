@@ -1,4 +1,5 @@
 #include "card_editor_grid_controller.h"
+#include "card.h"
 #include "game_input_handler.h"
 #include "grid_state.h"
 #include <stdexcept>
@@ -29,12 +30,23 @@ void CardEditorGridController::_bind_methods()
 	ClassDB::bind_method(D_METHOD("get_Turn"), &CardEditorGridController::get_Turn);
 	ClassDB::bind_method(D_METHOD("set_CardType", "CardType"), &CardEditorGridController::set_CardType);
 	ClassDB::bind_method(D_METHOD("get_CardType"), &CardEditorGridController::get_CardType);
+	ClassDB::bind_method(D_METHOD("set_CardRef", "Card"), &CardEditorGridController::set_CardRef);
+	ClassDB::bind_method(D_METHOD("get_CardRef"), &CardEditorGridController::get_CardRef);
 	ClassDB::bind_method(D_METHOD("saveCard", "path"), &CardEditorGridController::saveCard);
 	ClassDB::bind_method(D_METHOD("loadCard", "path"), &CardEditorGridController::loadCard);
 
 	ADD_GROUP("Card", "");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "Turn", PROPERTY_HINT_ENUM, "Turn 1,Turn 2,Turn 3,Turn 4"), "set_Turn", "get_Turn");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "CardType", PROPERTY_HINT_ENUM, "Argument,Counter Argument,Special"), "set_CardType", "get_CardType");
+}
+
+void CardEditorGridController::init(Variant owner)
+{
+	OwningGrid = owner;
+
+	CardRef.instance();
+	GridStateRef = CardRef->get_GridState();
+	GridStateRef->set_GridRef(owner);
 }
 
 void CardEditorGridController::process_tileHoverImpl(int oldTileIndex, int newTileIndex)
@@ -100,10 +112,6 @@ bool CardEditorGridController::switchCardTypePrev(const InputDetails &inputDetai
 
 bool CardEditorGridController::switchCardTypeNext(const InputDetails &inputDetails)
 {
-	const char* hash = GIT_COMMITHASH;
-	const char* author = GIT_AUTHOR;
-	const char* date = GIT_COMMITDATE;
-	const char* subject = GIT_SUBJECT;
 	if (bAcceptingInput && !(inputDetails.ActionState ^ EInputActionStatus::JustPressed))
 	{
 		EnumOpsECardType cardType = (CardType + 1 == ECardType::INVALID_CARD_END) ? ECardType::INVALID_CARD_START + 1 : CardType + 1;
@@ -120,17 +128,32 @@ bool CardEditorGridController::switchCardTypeNext(const InputDetails &inputDetai
 	return false;
 }
 
+
+void CardEditorGridController::set_CardType(ECardType cardType)
+{
+	CardRef->set_CardType(cardType);
+	CardType = cardType;
+}
+
+void CardEditorGridController::set_CardRef(const Ref<Card>& card)
+{
+	CardRef = card;
+	GridStateRef = CardRef->get_GridState();
+	GridStateRef->set_GridRef(OwningGrid);
+}
+
 void CardEditorGridController::saveCard(const String& path)
 {
 	if (GridStateRef.is_valid())
 	{
-		ResourceSaver::save(path, GridStateRef);
+		ResourceSaver::save(path, CardRef);
 	}
 
 }
 
 void CardEditorGridController::loadCard(const String &path)
 {
-	GridStateRef = ResourceLoader::load(path);
+	CardRef = ResourceLoader::load(path);
+	GridStateRef = CardRef->get_GridState();
 	GridStateRef->set_GridRef(OwningGrid);
 }

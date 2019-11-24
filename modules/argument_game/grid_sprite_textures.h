@@ -36,4 +36,4 @@ enum GridTextures
 };
 
 VARIANT_ENUM_CAST(GridTextures);
-ENUM_UTILITY_OPERATIONS(GridTextures)
+ENUM_UTILITY_OPERATIONS(GridTextures, false)
