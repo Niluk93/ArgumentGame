@@ -12,6 +12,7 @@ class Card : public Resource
 
 public:
 	Card();
+	~Card();
 	static void _bind_methods();
 
 	void set_GridState(const Ref<GridState>& gridState);

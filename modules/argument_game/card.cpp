@@ -10,6 +10,13 @@ Card::Card()
 	TextureRef.instance();
 }
 
+
+Card::~Card()
+{
+	GridStateRef.unref();
+	TextureRef.unref();
+}
+
 void Card::_bind_methods()
 {
 	BIND_ENUM_CONSTANT(CARD_ARGUMENT);
@@ -30,7 +37,7 @@ void Card::_bind_methods()
 	ClassDB::bind_method(D_METHOD("get_DescriptionBBCode"), &Card::get_DescriptionBBCode);
 
 	ADD_GROUP("Card", "");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "Name", PROPERTY_HINT_TYPE_STRING), "set_Name", "get_Name");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "Name", PROPERTY_HINT_NONE), "set_Name", "get_Name");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "Deck", PROPERTY_HINT_TYPE_STRING), "set_Deck", "get_Deck");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "CardType", PROPERTY_HINT_ENUM, "Argument,Counter Argument,Special"), "set_CardType", "get_CardType");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "GridState", PROPERTY_HINT_RESOURCE_TYPE), "set_GridState", "get_GridState");
