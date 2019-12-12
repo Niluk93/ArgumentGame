@@ -1,6 +1,6 @@
 [![Godot Engine logo](/logo.png)](https://godotengine.org)
 
-## Godot Engine
+## Argument Game
 
 Homepage: https://godotengine.org
 
