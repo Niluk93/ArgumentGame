@@ -31,14 +31,10 @@ steps:
     pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-#- script: |
-#    pip install pytest pytest-azurepipelines
-#    pytest
-#  displayName: 'pytest'
-
 - task: BatchScript@1
   inputs:
     filename: RunSconsRelease.bat
+  displayName: 'Build Editor'
 
 - script: |
     git config --global user.email "ArgumentDevOps@github.com"
@@ -48,7 +44,4 @@ steps:
 - task: BatchScript@1
   inputs:
     filename: CommitEditorStable.bat
-
-#- script: |
-#      RunSconsRelease.bat
-#  displayName: 'Build editor'
+  displayName: 'Submit Editor'
