@@ -15,8 +15,8 @@ pool:
   vmImage: 'vs2017-win2016'
 strategy:
   matrix:
-    Python35:
-      python.version: '3.5'
+    Python37:
+      python.version: '3.7.5'
 
 steps:
 - task: UsePythonVersion@0
@@ -29,11 +29,12 @@ steps:
     pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+#- script: |
+#    pip install pytest pytest-azurepipelines
+#    pytest
+#  displayName: 'pytest'
 
 - script: |
-    scons -j 6 platform=windows tools=yes target=release_debug
+      scons -j6 platform=windows vsproj=yes
+#     scons -j 6 platform=windows tools=yes target=release_debug
   displayName: 'Build editor'
