@@ -20,6 +20,7 @@ strategy:
 
 steps:
 - checkout: self
+  lfs: true
   persistCredentials: true
 - task: UsePythonVersion@0
   inputs:
@@ -29,7 +30,6 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-    git lfs install
   displayName: 'Install dependencies'
 
 - task: BatchScript@1
