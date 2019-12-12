@@ -19,6 +19,8 @@ strategy:
       python.version: '3.7.5'
 
 steps:
+- checkout: self
+  persistCredentials: true
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '$(python.version)'
@@ -34,7 +36,14 @@ steps:
 #    pytest
 #  displayName: 'pytest'
 
-- script: |
-      scons -j6 platform=windows vsproj=yes
-#     scons -j 6 platform=windows tools=yes target=release_debug
-  displayName: 'Build editor'
+- task: BatchScript@1
+  inputs:
+    filename: RunSconsRelease.bat
+
+- task: BatchScript@1
+  inputs:
+    filename: CommitEditorStable.bat
+
+#- script: |
+#      RunSconsRelease.bat
+#  displayName: 'Build editor'
