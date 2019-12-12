@@ -40,6 +40,11 @@ steps:
   inputs:
     filename: RunSconsRelease.bat
 
+- script: |
+    git config --global user.email "ArgumentDevOps@github.com"
+    git config --global user.name "Argument DevOps"
+  displayName: 'Setup git config'
+
 - task: BatchScript@1
   inputs:
     filename: CommitEditorStable.bat
