@@ -29,7 +29,7 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-    git install lfs
+    git lfs install
   displayName: 'Install dependencies'
 
 - task: BatchScript@1
