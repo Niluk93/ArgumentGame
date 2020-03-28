@@ -110,6 +110,11 @@ func on_Popup_Hide():
 
 
 func on_Deck_Activated(index):
+	# Select a different deck for the AI
+	AllDeckPaths.remove(SelectedDeckIndex)
+	var AIDeckIndex : int = randi() % AllDeckPaths.size()
+	DeckData.AIDeck.loadAllCards(AllDeckPaths[AIDeckIndex])
+	
 	get_tree().change_scene(\"res://GameGrid.tscn\")
 	pass # Replace with function body.
 "

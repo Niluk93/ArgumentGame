@@ -5,15 +5,14 @@
 
 void ArgumentGameGridController::_bind_methods()
 {
+	ClassDB::bind_method(D_METHOD("set_Deck", "deck"), &ArgumentGameGridController::set_Deck);
+	ClassDB::bind_method(D_METHOD("get_Deck"), &ArgumentGameGridController::get_Deck);
 }
 
 
 void ArgumentGameGridController::init(Variant owner)
 {
 	GridControllerBase::init(owner);
-
-	SelectedDeck.instance();
-	SelectedDeck->loadAllCards(L"res://Assets/CardPrefabs/Art/");
 }
 
 void ArgumentGameGridController::process_tileHoverImpl(int oldTileIndex, int newTileIndex)

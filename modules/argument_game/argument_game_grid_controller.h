@@ -17,6 +17,9 @@ protected:
 	virtual void process_tileSelectedImpl(int tileIndex) override;
 	virtual void process_gridStateChangedImpl(bool bNext) override;
 
+	void set_Deck(const Ref<Deck>& deck)							{ SelectedDeck = deck; }
+	Ref<Deck> get_Deck(const Ref<Deck>& deck) const					{ return SelectedDeck; }
+
 private:
 	Ref<Deck> SelectedDeck;
 };
