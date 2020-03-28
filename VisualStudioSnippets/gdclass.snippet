@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>gdclassdecl</Title>
+			<Shortcut>hh</Shortcut>
+			<Description>Code snippet for gd class declaration</Description>
+			<Author>Nilesh Krishnan</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>name</ID>
+					<ToolTip>Class name</ToolTip>
+					<Default>MyClass</Default>
+				</Literal>
+				<Literal>
+					<ID>base</ID>
+					<ToolTip>Base Class</ToolTip>
+					<Default>Resource</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="cpp"><![CDATA[class $name$ : public $base$
+				{
+				public:
+					$name$();
+					~$name$();
+					static void _bind_methods();
+
+				private:
+					$selected$$end$
+				};]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

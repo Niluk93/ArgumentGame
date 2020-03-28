@@ -1,0 +1,178 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://SplashScreen.png" type="Texture" id=1]
+[ext_resource path="res://Assets/UI/Themes/MainMenuTheme.tres" type="Theme" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends ItemList
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+onready var AllDeckIcons : Array = [preload(\"res://Assets/DeckIcons/DeckArt.png\"),
+									preload(\"res://Assets/DeckIcons/DeckTech.png\"),
+									preload(\"res://Assets/DeckIcons/DeckDesign.png\"),
+									preload(\"res://Assets/DeckIcons/DeckQA.png\"),
+									preload(\"res://Assets/DeckIcons/DeckProd.png\")]
+							
+onready var AllDeckNames : Array = [\"Art\",
+									\"Tech\",
+									\"Design\",
+									\"QA\",
+									\"Production\"]
+							
+onready var AllDeckPaths : Array = [\"res://Assets/CardPrefabs/Art/\",
+									\"res://Assets/CardPrefabs/Tech/\",
+									\"res://Assets/CardPrefabs/Design/\",
+									\"res://Assets/CardPrefabs/QA/\",
+									\"res://Assets/CardPrefabs/Prod/\"]
+									
+onready var SelectedDeckIndex : int = -1
+
+onready var ItemListCards : ItemList = get_node(\"/root/Control/ItemList_Cards\")
+onready var CardPopup : PopupPanel = get_node(\"/root/Control/Popup_CardPreview\")
+onready var CardTexture : TextureRect = get_node(\"/root/Control/Popup_CardPreview/Tex_Card\")
+
+onready var DeckSelectLabel : Label = get_node(\"/root/Control/Lbl_DeckSelect\")
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	for emptyItemIndex in range(max_columns):
+		add_item(\"\", null, false)
+	
+	for deckIcon in AllDeckIcons:
+		add_icon_item(deckIcon)
+	
+	var firstDeckItem = max_columns
+	for deckNameIndex in range(AllDeckNames.size()):
+		self.set_item_tooltip(deckNameIndex + firstDeckItem, AllDeckNames[deckNameIndex])
+	
+	select(max_columns)
+	on_Deck_Selected(max_columns)
+	
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+func on_Deck_Selected(index):
+	var deckIndex : int = index - max_columns
+	if (SelectedDeckIndex == deckIndex):
+		pass
+		
+	if deckIndex >= 0 && deckIndex < AllDeckPaths.size():
+		DeckData.PlayerDeck.loadAllCards(AllDeckPaths[deckIndex])
+		SelectedDeckIndex = deckIndex
+	else:
+		pass
+	
+	ItemListCards.clear()
+	var AllCards : Array = DeckData.PlayerDeck.getAllCards()
+	for CurrItem in AllCards:
+		var CurrCard : Card = CurrItem as Card
+		ItemListCards.add_icon_item(CurrCard.get_Texture())
+	
+	pass # Replace with function body.
+
+
+func on_Card_Selected(index):
+	#open card popup and set selected card
+	CardPopup.popup()
+	CardTexture.set_texture(ItemListCards.get_item_icon(index))
+	pass # Replace with function body.
+
+
+
+func on_Popup_Show():
+	DeckSelectLabel.set_text(\"CARD PREVIEW\")
+	
+	set_visible(false)
+	ItemListCards.set_visible(false)
+	
+	set_mouse_filter(MOUSE_FILTER_IGNORE)
+	ItemListCards.set_mouse_filter(MOUSE_FILTER_IGNORE)
+	pass # Replace with function body.
+
+
+func on_Popup_Hide():
+	DeckSelectLabel.set_text(\"SELECT DECK\")
+	
+	set_visible(true)
+	ItemListCards.set_visible(true)
+	
+	yield(get_tree().create_timer(0.1), \"timeout\")
+	
+	set_mouse_filter(MOUSE_FILTER_STOP)
+	ItemListCards.set_mouse_filter(MOUSE_FILTER_STOP)
+	pass # Replace with function body.
+
+
+func on_Deck_Activated(index):
+	get_tree().change_scene(\"res://GameGrid.tscn\")
+	pass # Replace with function body.
+"
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 2 )
+
+[node name="Bg_MainMenu" type="Sprite" parent="."]
+position = Vector2( 512, 320 )
+scale = Vector2( 0.535, 0.535 )
+texture = ExtResource( 1 )
+
+[node name="Lbl_DeckSelect" type="Label" parent="."]
+margin_left = 393.0
+margin_top = 100.0
+margin_right = 609.0
+margin_bottom = 140.0
+text = "SELECT DECK"
+align = 1
+valign = 1
+
+[node name="Bg_DeckSelect" type="ColorRect" parent="Lbl_DeckSelect"]
+show_behind_parent = true
+margin_right = 216.0
+margin_bottom = 40.0
+color = Color( 0, 0, 0, 0.392157 )
+
+[node name="ItemList_Decks" type="ItemList" parent="."]
+margin_left = 276.0
+margin_top = 180.0
+margin_right = 716.0
+margin_bottom = 292.0
+max_columns = 5
+icon_mode = 0
+script = SubResource( 1 )
+
+[node name="ItemList_Cards" type="ItemList" parent="."]
+margin_left = 67.0
+margin_top = 375.0
+margin_right = 962.0
+margin_bottom = 555.0
+allow_reselect = true
+max_columns = 20
+icon_mode = 0
+icon_scale = 0.5
+
+[node name="Popup_CardPreview" type="PopupPanel" parent="."]
+margin_left = 380.0
+margin_top = 155.0
+margin_right = 640.0
+margin_bottom = 515.0
+custom_styles/panel = SubResource( 2 )
+
+[node name="Tex_Card" type="TextureRect" parent="Popup_CardPreview"]
+margin_right = 260.0
+margin_bottom = 360.0
+[connection signal="item_activated" from="ItemList_Decks" to="ItemList_Decks" method="on_Deck_Activated"]
+[connection signal="item_selected" from="ItemList_Decks" to="ItemList_Decks" method="on_Deck_Selected"]
+[connection signal="item_selected" from="ItemList_Cards" to="ItemList_Decks" method="on_Card_Selected"]
+[connection signal="about_to_show" from="Popup_CardPreview" to="ItemList_Decks" method="on_Popup_Show"]
+[connection signal="popup_hide" from="Popup_CardPreview" to="ItemList_Decks" method="on_Popup_Hide"]

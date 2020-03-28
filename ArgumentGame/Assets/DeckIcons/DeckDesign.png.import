@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/SplashScreen.jpg-9727b5c1501462f5784533fce178d397.stex"
+path="res://.import/DeckDesign.png-aeda3182b4a8402540ff5884c289ae20.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://SplashScreen.jpg"
-dest_files=[ "res://.import/SplashScreen.jpg-9727b5c1501462f5784533fce178d397.stex" ]
+source_file="res://Assets/DeckIcons/DeckDesign.png"
+dest_files=[ "res://.import/DeckDesign.png-aeda3182b4a8402540ff5884c289ae20.stex" ]
 
 [params]
 

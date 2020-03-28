@@ -1,0 +1,60 @@
+[gd_resource type="Theme" load_steps=7 format=2]
+
+[ext_resource path="res://Assets/Fonts/CardEditorFont.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Assets/Fonts/CardEditorLabelFont.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Assets/Fonts/MainMenuLabel.tres" type="DynamicFont" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 0.392157 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0, 0.6, 0.6, 0.392157 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0, 0.6, 0.6, 0.392157 )
+corner_detail = 1
+
+[resource]
+default_font = ExtResource( 1 )
+Icons/icons/close = null
+Icons/icons/logo = null
+ItemList/colors/font_color = Color( 0.627451, 0.627451, 0.627451, 1 )
+ItemList/colors/font_color_selected = Color( 1, 1, 1, 1 )
+ItemList/colors/guide_color = Color( 0, 0, 0, 0.1 )
+ItemList/constants/hseparation = 12
+ItemList/constants/icon_margin = 0
+ItemList/constants/line_separation = 2
+ItemList/constants/vseparation = 12
+ItemList/fonts/font = null
+ItemList/styles/bg = SubResource( 1 )
+ItemList/styles/bg_focus = null
+ItemList/styles/cursor = null
+ItemList/styles/cursor_unfocused = null
+ItemList/styles/selected = SubResource( 2 )
+ItemList/styles/selected_focus = SubResource( 3 )
+Label/colors/font_color = Color( 1, 1, 1, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+Label/colors/font_outline_modulate = Color( 1, 1, 1, 1 )
+Label/constants/line_spacing = 3
+Label/constants/shadow_as_outline = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/fonts/font = ExtResource( 3 )
+Label/styles/normal = null
+RichTextLabel/colors/default_color = Color( 1, 1, 1, 1 )
+RichTextLabel/colors/font_color_selected = Color( 0.490196, 0.490196, 0.490196, 1 )
+RichTextLabel/colors/font_color_shadow = Color( 0, 0, 0, 0 )
+RichTextLabel/colors/selection_color = Color( 0.1, 0.1, 1, 0.8 )
+RichTextLabel/constants/line_separation = 1
+RichTextLabel/constants/shadow_as_outline = 0
+RichTextLabel/constants/shadow_offset_x = 1
+RichTextLabel/constants/shadow_offset_y = 1
+RichTextLabel/constants/table_hseparation = 3
+RichTextLabel/constants/table_vseparation = 3
+RichTextLabel/fonts/bold_font = ExtResource( 2 )
+RichTextLabel/fonts/bold_italics_font = ExtResource( 2 )
+RichTextLabel/fonts/italics_font = ExtResource( 2 )
+RichTextLabel/fonts/mono_font = ExtResource( 2 )
+RichTextLabel/fonts/normal_font = ExtResource( 2 )
+RichTextLabel/styles/focus = null
+RichTextLabel/styles/normal = null

@@ -10,13 +10,6 @@ Card::Card()
 	TextureRef.instance();
 }
 
-
-Card::~Card()
-{
-	GridStateRef.unref();
-	TextureRef.unref();
-}
-
 void Card::_bind_methods()
 {
 	BIND_ENUM_CONSTANT(CARD_ARGUMENT);

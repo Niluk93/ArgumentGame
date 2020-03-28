@@ -1,9 +1,19 @@
 #include "argument_game_grid_controller.h"
 #include "grid_sprite_textures.h"
 #include "grid_state.h"
+#include "deck.h"
 
 void ArgumentGameGridController::_bind_methods()
 {
+}
+
+
+void ArgumentGameGridController::init(Variant owner)
+{
+	GridControllerBase::init(owner);
+
+	SelectedDeck.instance();
+	SelectedDeck->loadAllCards(L"res://Assets/CardPrefabs/Art/");
 }
 
 void ArgumentGameGridController::process_tileHoverImpl(int oldTileIndex, int newTileIndex)
